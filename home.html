@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Practice!
+        </title>
+        <meta charset="UTF-8">
+        <meta lang="en-US">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="images/clouds.png">
+        <link rel="stylesheet" href="style2.css">
+    </head>
+    <body>
+        <h1>Weather App</h1>
+        <div class="weather-card">
+<!--Done--><div class="search">
+                <input type="text" placeholder="Enter a city">
+                <button><img src="images/search.png"></button>
+            </div>
+            <div class="error">
+                <p>Enter valid city name!</p>
+            </div>
+            <div class="weather-body">
+<!--Done--> <div class="weather-deets">
+                <h2>City name</h2>
+                <img src="images/clouds.png">
+                <p>Weather type</p>
+                <p id="temp">Temp</p>
+            </div>
+<!--Done--> <div class="breakdown">
+                <div class="col">
+                    <img src="images/wind.png">
+                    <p id="speed">Wind speed</p>
+                </div>
+                <div class="col">
+                    <img src="images/humidity.png">
+                    <p id="humidity">Humidity</p>
+                </div>
+            </div>
+<!--Done--> <div class="more-deets">
+                <div class="col-1">
+                    <p>Temperature</p>
+                    <p class="col-p">Celsius</p>
+                    <img src="images/next.png">
+                </div>
+                <div class="col-1">
+                    <p>Wind Speed</p>
+                    <p class="col-p">Km/hr</p>
+                    <img src="images/next.png">
+                </div>
+                <div class="col-1">
+                    <p>Source</p>
+                    <p class="col-p">Weathermap</p>
+                    <img src="images/next.png"> 
+                </div>
+            </div>
+            </div>
+        </div>
+        <script>
+        const apiKey = "76d692b59cd875f9ae57d210c99e971b";
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        const searchBtn = document.querySelector(".search button");
+        const searchBox = document.querySelector(".search input");
+
+        //wait for application to fetch api
+        async function weather(city) {
+            //handle empty input
+            if(!city.trim())return
+            const response = await fetch(apiUrl + city + `&appid=${apiKey}`)
+            //handle wrong city name
+            if(!response.ok){
+                document.querySelector(".error").style.display="block";
+                document.querySelector(".weather-body").style.display="none";
+                return
+            //display city details
+            }else{
+                const data = await response.json();
+                console.log(data);
+
+                document.querySelector(".weather-deets h2").innerHTML = data.name;
+                document.querySelector("#temp").innerHTML = data.main.temp + " °C";
+                document.querySelector("#speed").innerHTML = data.wind.speed + " km/hr";
+                document.querySelector("#humidity").innerHTML = data.main.humidity + " %";
+                document.querySelector(".weather-deets p").innerHTML = data.weather[0].main;
+
+                if(data.weather[0].main== "Clear"){
+                    document.querySelector(".weather-deets img").src = "images/clear.png";
+                }else if(data.weather[0].main== "Clouds"){
+                    document.querySelector(".weather-deets img").src = "images/clouds.png";
+                }else if(data.weather[0].main == "Drizzle"){
+                    document.querySelector(".weather-deets img").src = "images/drizzle.png";
+                }else if(data.weather[0].main == "Mist"){
+                    document.querySelector(".weather-deets img").src = "images/mist.png";
+                }else if(data.weather[0].main == "Rain"){
+                    document.querySelector(".weather-deets img").src = "images/rain.png";
+                }else if(data.weather[0].main == "Snow"){
+                    document.querySelector(".weather-deets img").src = "images/snow.png";
+                }
+                document.querySelector(".error").style.display="none";
+                document.querySelector(".weather-body").style.display="block";
+            }
+        }
+        searchBtn.addEventListener("click", ()=>{
+            weather(searchBox.value);
+        })
+        searchBox.addEventListener("keypress", (e)=>{
+            if(e.key=="Enter"){
+                weather(searchBox.value)
+            }
+        })
+        weather("Nairobi");
+    </script>
+    </body>
+</html>
